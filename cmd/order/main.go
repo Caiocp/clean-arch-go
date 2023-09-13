@@ -34,7 +34,6 @@ func main() {
 		panic(err)
 	}
 	defer db.Close()
-	createOrdersTable(db)
 
 	rabbitMQChannel := getRabbitMQChannel(configs.RabbitMQUser, configs.RabbitMQPassword, configs.RabbitMQHost, configs.RabbitMQPort)
 
@@ -81,16 +80,4 @@ func getRabbitMQChannel(user, password, host, port string) *amqp.Channel {
 		panic(err)
 	}
 	return ch
-}
-
-func createOrdersTable(db *sql.DB) {
-	fmt.Println("Creating orders table...")
-	stmt, err := db.Prepare("CREATE TABLE IF NOT EXISTS orders (id varchar(255) NOT NULL, price float NOT NULL, tax float NOT NULL, final_price float NOT NULL, PRIMARY KEY (id))")
-	if err != nil {
-		panic(err)
-	}
-	_, err = stmt.Exec()
-	if err != nil {
-		panic(err)
-	}
 }
