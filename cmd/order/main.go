@@ -40,8 +40,6 @@ func main() {
 	eventDispatcher := events.NewEventDispatcher()
 	eventDispatcher.Register("OrderCreated", handler.NewOrderCreatedHandler(rabbitMQChannel))
 
-	createOrderUseCase := NewCreateOrderUseCase(db, eventDispatcher)
-
 	webserver := webserver.NewWebServer(configs.WebServerPort)
 	webOrderHandler := NewWebOrderHandler(db, eventDispatcher)
 	webserver.AddHandler("/orders", webOrderHandler.CreateOrder, http.MethodPost)
@@ -49,9 +47,12 @@ func main() {
 	fmt.Println("Starting web server on port", configs.WebServerPort)
 	go webserver.Start()
 
+	createOrderUseCase := NewCreateOrderUseCase(db, eventDispatcher)
+	findOrdersUseCase := NewFindOrdersUseCase(db)
+
 	grpcServer := grpc.NewServer()
-	createOrderService := service.NewOrderService(*createOrderUseCase)
-	pb.RegisterOrderServiceServer(grpcServer, createOrderService)
+	orderService := service.NewOrderService(*createOrderUseCase, *findOrdersUseCase)
+	pb.RegisterOrderServiceServer(grpcServer, orderService)
 	reflection.Register(grpcServer)
 
 	fmt.Println("Starting gRPC server on port", configs.GRPCServerPort)
