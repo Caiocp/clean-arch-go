@@ -4,17 +4,17 @@ import (
 	"github.com/caiocp/clean-arch-go/internal/entity"
 )
 
-type FindOrdersUseCase struct {
+type ListOrdersUseCase struct {
 	OrderRepository entity.OrderRepositoryInterface
 }
 
-func NewFindOrdersUseCase(orderRepository entity.OrderRepositoryInterface) *FindOrdersUseCase {
-	return &FindOrdersUseCase{
+func NewListOrdersUseCase(orderRepository entity.OrderRepositoryInterface) *ListOrdersUseCase {
+	return &ListOrdersUseCase{
 		OrderRepository: orderRepository,
 	}
 }
 
-func (c *FindOrdersUseCase) Execute() ([]entity.Order, error) {
+func (c *ListOrdersUseCase) Execute() ([]entity.Order, error) {
 	orders, err := c.OrderRepository.FindAll()
 	if err != nil {
 		return nil, err

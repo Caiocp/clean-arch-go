@@ -51,8 +51,8 @@ func (h *WebOrderHandler) CreateOrder(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *WebOrderHandler) FindAll(w http.ResponseWriter, r *http.Request) {
-	findOrdersUseCase := usecase.NewFindOrdersUseCase(h.OrderRepository)
-	output, err := findOrdersUseCase.Execute()
+	listOrdersUseCase := usecase.NewListOrdersUseCase(h.OrderRepository)
+	output, err := listOrdersUseCase.Execute()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
